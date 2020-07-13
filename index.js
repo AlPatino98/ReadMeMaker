@@ -1,65 +1,62 @@
 const fs = require("fs");
 const inquirer = require("inquirer");
+const util = require("util");
 
-const writeFileAsync = fs.writeFile
-// const appendFileAsync = fs.appendFile
+const generateMarkdown = require("./generateMarkdown");
+
+const writeFileAsync = util.promisify(fs.writeFile);
 
 // array of questions for user
 const questions = [
     {
         type: "input",
         message: "What is the title of your project?",
-        name: "Title"
+        name: "title"
     },
     {
         type: "input",
         message: "Give a description about your project",
-        name: "Description"
-    },
-    {
-        type: "input",
-        message: "What is the contents of the project?",
-        name: "Table of contents"
+        name: "description"
     },
     {
         type: "input",
         message: "How do you use it?",
-        name: "Usage"
+        name: "usage"
     },
     {
         type: "input",
         message: "What have you contributed to the repo?",
-        name: "Contributing"
+        name: "contributing"
     },
     {
         type: "input",
-        message: "How does you test this project?",
-        name: "Test"
+        message: "How do you test this project?",
+        name: "test"
     },
     {
         type: "input",
         message: "Any Questions?",
-        name: "Questions"
+        name: "questions"
+    },
+    {
+        type: "input",
+        message: "Who licenced this?",
+        name: "license"
     }
 ];
 
 // function to write README file
-// function writeToFile(fileName, data) {
-//      fs.writeFile(path.join(proccess.cwd(), fileName), data);
-//     fs.writeFile(filename(data, null, '\t'),
-//     function(err) {
-//         if (err) {
-//           return console.log(err);
-//         };
-//     });
-// }
+function writeToFile(data) {
+    return writeFileAsync("README.md",generateMarkdown(data))
+}
+
 
 // function to initialize program
 function init() {
     inquirer.prompt(questions)
     .then((data) => {
         console.log(data);
-        fs.writeFile(`README.md`,"utf8",({...data}))
+       writeToFile(data)
     });
 }
 
